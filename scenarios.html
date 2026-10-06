@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What Would You Do? - Phishing Scenarios</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #eef4ff;
+            color: #222;
+        }
+
+        header {
+            background: #173b7a;
+            color: white;
+            text-align: center;
+            padding: 35px 15px;
+        }
+
+        header h1 {
+            margin: 0 0 10px;
+            font-size: 32px;
+        }
+
+        header p {
+            margin: 0;
+            font-size: 17px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 35px auto;
+            padding: 20px;
+        }
+
+        .score {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .scenario {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .scenario-number {
+            color: #173b7a;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .scenario h2 {
+            margin-top: 10px;
+        }
+
+        .situation {
+            background: #f1f5ff;
+            border-left: 5px solid #173b7a;
+            padding: 18px;
+            border-radius: 8px;
+            line-height: 1.6;
+            margin: 20px 0;
+        }
+
+        .choices {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .choice {
+            background: white;
+            border: 2px solid #d0d7e5;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: left;
+            cursor: pointer;
+            font-size: 16px;
+            transition: 0.2s;
+        }
+
+        .choice:hover {
+            background: #f1f5ff;
+            border-color: #173b7a;
+        }
+
+        .choice:disabled {
+            cursor: not-allowed;
+            opacity: 0.9;
+        }
+
+        .correct {
+            border-color: #188038 !important;
+            background: #e8f5e9 !important;
+        }
+
+        .incorrect {
+            border-color: #d93025 !important;
+            background: #ffebee !important;
+        }
+
+        .feedback {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            line-height: 1.6;
+        }
+
+        .feedback.correct-feedback {
+            background: #e8f5e9;
+            border-left: 5px solid #188038;
+        }
+
+        .feedback.incorrect-feedback {
+            background: #ffebee;
+            border-left: 5px solid #d93025;
+        }
+
+        .next-button {
+            display: none;
+            margin-top: 20px;
+            background: #173b7a;
+            color: white;
+            border: none;
+            padding: 14px 25px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .next-button:hover {
+            opacity: 0.85;
+        }
+
+        .final-screen {
+            display: none;
+            background: white;
+            padding: 35px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .final-screen h2 {
+            font-size: 30px;
+        }
+
+        .restart-button {
+            background: #173b7a;
+            color: white;
+            border: none;
+            padding: 14px 25px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #555;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                margin: 15px auto;
+                padding: 15px;
+            }
+
+            .scenario {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>🛡️ What Would You Do?</h1>
+    <p>Test your phishing safety skills with real-life scenarios!</p>
+</header>
+
+<div class="container">
+
+    <div class="score">
+        Scenario <span id="scenarioNumber">1</span> / 12
+        &nbsp; | &nbsp;
+        Score: <span id="score">0</span>
+    </div>
+
+    <div id="game">
+
+        <div class="scenario">
+
+            <div class="scenario-number" id="number"></div>
+
+            <h2 id="title"></h2>
+
+            <div class="situation">
+                <strong>What happens?</strong>
+                <p id="situation"></p>
+            </div>
+
+            <h3>What would you do?</h3>
+
+            <div class="choices" id="choices"></div>
+
+            <div class="feedback" id="feedback">
+                <h3 id="feedbackTitle"></h3>
+                <p id="feedbackText"></p>
+            </div>
+
+            <button class="next-button" id="nextButton" onclick="nextScenario()">
+                Next Scenario →
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="final-screen" id="finalScreen">
+
+        <h2>🎉 Game Complete!</h2>
+
+        <p>
+            You scored
+            <strong><span id="finalScore">0</span>/12</strong>
+        </p>
+
+        <p id="finalMessage"></p>
+
+        <button class="restart-button" onclick="restartGame()">
+            🔄 Play Again
+        </button>
+
+    </div>
+
+</div>
+
+<footer>
+    <p>🛡️ Think before you click. Stay safe online!</p>
+</footer>
+
+
+<script>
+
+const scenarios = [
+
+    {
+        title: "The Urgent Bank Message",
+        situation: "You receive a message claiming to be from your bank. It says your account will be locked in 10 minutes unless you click a link and sign in.",
+        choices: [
+            "Click the link immediately.",
+            "Reply with your password.",
+            "Open your bank's official website or app yourself and check your account.",
+            "Forward the message to your friends."
+        ],
+        answer: 2,
+        explanation: "The safest choice is to access your bank through its official app or website yourself. Don't use links from unexpected messages."
+    },
+
+    {
+        title: "The Prize You Didn't Enter",
+        situation: "You receive an email saying you won a $5,000 prize from a contest you don't remember entering. It asks for your address and banking information.",
+        choices: [
+            "Send the information so you can get your prize.",
+            "Click the prize link.",
+            "Ignore the message and report it as suspicious.",
+            "Reply asking how you can receive the money."
+        ],
+        answer: 2,
+        explanation: "Unexpected prizes that request personal or financial information are a common phishing warning sign."
+    },
+
+    {
+        title: "Your School Account",
+        situation: "You receive a message saying your school account needs to be verified. The link goes to a website with a strange-looking address.",
+        choices: [
+            "Enter your school password.",
+            "Check with your teacher or school before doing anything.",
+            "Click the link because it has the school logo.",
+            "Send the link to another student."
+        ],
+        answer: 1,
+        explanation: "A school logo doesn't prove a message is real. Check with your school or use the official school website instead."
+    },
+
+    {
+        title: "A Friend Needs Help",
+        situation: "You receive a message from a friend's account saying they are stuck somewhere and urgently need money.",
+        choices: [
+            "Send money immediately.",
+            "Ask them for their banking information.",
+            "Contact your friend another way to make sure it is really them.",
+            "Forward the message to everyone."
+        ],
+        answer: 2,
+        explanation: "A hacked account can be used to impersonate someone you know. Verify the request using another way of contacting them."
+    },
+
+    {
+        title: "The Suspicious Package",
+        situation: "You get a text saying your package could not be delivered. It asks you to click a link and enter your address and credit card information.",
+        choices: [
+            "Click the link and enter the information.",
+            "Check the delivery company's official website or app yourself.",
+            "Send your credit card number by text.",
+            "Reply to the message with your address."
+        ],
+        answer: 1,
+        explanation: "Instead of using a link from an unexpected text, check the delivery company's official website or app."
+    },
+
+    {
+        title: "Free Game Currency",
+        situation: "A website promises free game currency if you enter your game username and password.",
+        choices: [
+            "Enter your password because it's free.",
+            "Use your friend's password instead.",
+            "Avoid the website and use the game's official store.",
+            "Share the website with your friends."
+        ],
+        answer: 2,
+        explanation: "Offers for free currency can be used to steal account information. Use official game services instead."
+    },
+
+    {
+        title: "The Fake Tech Support Alert",
+        situation: "A pop-up says your computer has a serious problem and tells you to call a phone number immediately.",
+        choices: [
+            "Call the number immediately.",
+            "Give the person remote access to your computer.",
+            "Close the pop-up and use trusted security software or ask a trusted adult for help.",
+            "Give them your password."
+        ],
+        answer: 2,
+        explanation: "Unexpected pop-ups claiming your computer is infected can be tech-support scams. Don't give strangers access to your device."
+    },
+
+    {
+        title: "The Social Media Warning",
+        situation: "You receive a message saying your social media account will be deleted unless you verify it using a link.",
+        choices: [
+            "Click the link immediately.",
+            "Enter your password and verification code.",
+            "Open the social media app yourself and check for notifications.",
+            "Send the message to your friends."
+        ],
+        answer: 2,
+        explanation: "Threats about account deletion are often used to create panic. Check your account through the official app or website."
+    },
+
+    {
+        title: "The Teacher's Request",
+        situation: "You receive an email that appears to be from a teacher asking you to buy gift cards and send the codes.",
+        choices: [
+            "Buy the gift cards.",
+            "Send the codes immediately.",
+            "Verify the request with your teacher using another method.",
+            "Ask another student to buy them."
+        ],
+        answer: 2,
+        explanation: "Requests for gift cards are a common scam. Verify unusual requests directly with the person."
+    },
+
+    {
+        title: "The Free Wi-Fi Login",
+        situation: "At a public place, you see a Wi-Fi network asking you to enter your email password before connecting.",
+        choices: [
+            "Enter your normal email password.",
+            "Use the same password you use everywhere.",
+            "Ask staff for the official Wi-Fi information.",
+            "Give the password to someone nearby."
+        ],
+        answer: 2,
+        explanation: "Don't enter your important passwords into suspicious Wi-Fi login pages. Ask staff for the correct network information."
+    },
+
+    {
+        title: "The Verification Code",
+        situation: "Someone messages you claiming to be support and asks you to send them a verification code that just arrived on your phone.",
+        choices: [
+            "Send them the code.",
+            "Send them your password too.",
+            "Don't share the code and contact the service through its official support page.",
+            "Post the code online."
+        ],
+        answer: 2,
+        explanation: "Verification codes are meant to protect your account. Never share them with someone who contacts you unexpectedly."
+    },
+
+    {
+        title: "The Suspicious Link From a Friend",
+        situation: "A friend sends you a message saying, 'OMG is this you?' with a strange link.",
+        choices: [
+            "Click it immediately.",
+            "Download whatever it asks you to download.",
+            "Ask your friend if they actually sent it and avoid the link for now.",
+            "Send it to another friend."
+        ],
+        answer: 2,
+        explanation: "Your friend's account could have been compromised. Verify with them before opening a suspicious link."
+    }
+
+];
+
+
+let currentScenario = 0;
+let score = 0;
+let answered = false;
+
+
+function loadScenario() {
+
+    const scenario = scenarios[currentScenario];
+
+    document.getElementById("scenarioNumber").textContent =
+        currentScenario + 1;
+
+    document.getElementById("number").textContent =
+        "SCENARIO " + (currentScenario + 1);
+
+    document.getElementById("title").textContent =
+        scenario.title;
+
+    document.getElementById("situation").textContent =
+        scenario.situation;
+
+    document.getElementById("score").textContent =
+        score;
+
+    const choices = document.getElementById("choices");
+
+    choices.innerHTML = "";
+
+    scenario.choices.forEach((choice, index) => {
+
+        const button = document.createElement("button");
+
+        button.className = "choice";
+
+        button.textContent =
+            String.fromCharCode(65 + index) + ". " + choice;
+
+        button.onclick = function() {
+            checkAnswer(index, button);
+        };
+
+        choices.appendChild(button);
+
+    });
+
+    document.getElementById("feedback").style.display = "none";
+
+    document.getElementById("nextButton").style.display = "none";
+
+    answered = false;
+}
+
+
+function checkAnswer(selected, clickedButton) {
+
+    if (answered) {
+        return;
+    }
+
+    answered = true;
+
+    const scenario = scenarios[currentScenario];
+
+    const buttons =
+        document.querySelectorAll(".choice");
+
+    buttons.forEach(button => {
+        button.disabled = true;
+    });
+
+    const feedback =
+        document.getElementById("feedback");
+
+    const feedbackTitle =
+        document.getElementById("feedbackTitle");
+
+    const feedbackText =
+        document.getElementById("feedbackText");
+
+    if (selected === scenario.answer) {
+
+        score++;
+
+        clickedButton.classList.add("correct");
+
+        feedback.className =
+            "feedback correct-feedback";
+
+        feedbackTitle.textContent =
+            "✅ Correct!";
+
+        feedbackText.textContent =
+            scenario.explanation;
+
+    } else {
+
+        clickedButton.classList.add("incorrect");
+
+        buttons[scenario.answer].classList.add("correct");
+
+        feedback.className =
+            "feedback incorrect-feedback";
+
+        feedbackTitle.textContent =
+            "❌ Not quite!";
+
+        feedbackText.textContent =
+            scenario.explanation;
+    }
+
+    document.getElementById("score").textContent =
+        score;
+
+    feedback.style.display = "block";
+
+    document.getElementById("nextButton").style.display =
+        "inline-block";
+}
+
+
+function nextScenario() {
+
+    currentScenario++;
+
+    if (currentScenario >= scenarios.length) {
+
+        showFinalScreen();
+
+    } else {
+
+        loadScenario();
+    }
+}
+
+
+function showFinalScreen() {
+
+    document.getElementById("game").style.display =
+        "none";
+
+    document.getElementById("finalScreen").style.display =
+        "block";
+
+    document.getElementById("finalScore").textContent =
+        score;
+
+    const finalMessage =
+        document.getElementById("finalMessage");
+
+    if (score === 12) {
+
+        finalMessage.textContent =
+            "🏆 Perfect! You have excellent phishing safety skills!";
+
+    } else if (score >= 9) {
+
+        finalMessage.textContent =
+            "👏 Great job! You know how to recognize many phishing tricks.";
+
+    } else if (score >= 6) {
+
+        finalMessage.textContent =
+            "👍 Good work! Keep learning about online safety.";
+
+    } else {
+
+        finalMessage.textContent =
+            "📚 Keep practicing! Learning these warning signs can help you stay safer online.";
+    }
+}
+
+
+function restartGame() {
+
+    currentScenario = 0;
+    score = 0;
+
+    document.getElementById("game").style.display =
+        "block";
+
+    document.getElementById("finalScreen").style.display =
+        "none";
+
+    loadScenario();
+}
+
+
+loadScenario();
+
+</script>
+
+</body>
+</html>
