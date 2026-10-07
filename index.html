@@ -1,615 +1,1017 @@
+```html
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>What Would You Do? - Phishing Scenarios</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+<title>🔐 Vérificateur de mot de passe</title>
 
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #eef4ff;
-            color: #222;
-        }
+<style>
 
-        header {
-            background: #173b7a;
-            color: white;
-            text-align: center;
-            padding: 35px 15px;
-        }
+/* ==============================
+   STYLE PRINCIPAL
+============================== */
 
-        header h1 {
-            margin: 0 0 10px;
-            font-size: 32px;
-        }
+* {
+    box-sizing: border-box;
+}
 
-        header p {
-            margin: 0;
-            font-size: 17px;
-        }
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #1f2937;
 
-        .container {
-            max-width: 800px;
-            margin: 35px auto;
-            padding: 20px;
-        }
+    min-height: 100vh;
 
-        .score {
-            text-align: center;
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
+    background:
+        radial-gradient(circle at 10% 20%, #93c5fd 0, transparent 25%),
+        radial-gradient(circle at 90% 80%, #c4b5fd 0, transparent 25%),
+        linear-gradient(135deg, #eef5ff, #f7f2ff);
 
-        .scenario {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
-        }
+    overflow-x: hidden;
+}
 
-        .scenario-number {
-            color: #173b7a;
-            font-weight: bold;
-            font-size: 18px;
-        }
 
-        .scenario h2 {
-            margin-top: 10px;
-        }
+/* Petites décorations dans l'arrière-plan */
 
-        .situation {
-            background: #f1f5ff;
-            border-left: 5px solid #173b7a;
-            padding: 18px;
-            border-radius: 8px;
-            line-height: 1.6;
-            margin: 20px 0;
-        }
+body::before,
+body::after {
+    content: "";
+    position: fixed;
+    border-radius: 50%;
+    z-index: -1;
+    opacity: 0.35;
+}
 
-        .choices {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
+body::before {
+    width: 250px;
+    height: 250px;
+    background: #60a5fa;
+    top: 120px;
+    right: -100px;
+}
 
-        .choice {
-            background: white;
-            border: 2px solid #d0d7e5;
-            border-radius: 10px;
-            padding: 15px;
-            text-align: left;
-            cursor: pointer;
-            font-size: 16px;
-            transition: 0.2s;
-        }
+body::after {
+    width: 200px;
+    height: 200px;
+    background: #a78bfa;
+    bottom: 50px;
+    left: -80px;
+}
 
-        .choice:hover {
-            background: #f1f5ff;
-            border-color: #173b7a;
-        }
 
-        .choice:disabled {
-            cursor: not-allowed;
-            opacity: 0.9;
-        }
+/* ==============================
+   EN-TÊTE
+============================== */
 
-        .correct {
-            border-color: #188038 !important;
-            background: #e8f5e9 !important;
-        }
+header {
+    text-align: center;
+    color: white;
 
-        .incorrect {
-            border-color: #d93025 !important;
-            background: #ffebee !important;
-        }
+    padding: 45px 20px;
 
-        .feedback {
-            display: none;
-            margin-top: 20px;
-            padding: 20px;
-            border-radius: 10px;
-            line-height: 1.6;
-        }
+    background:
+        linear-gradient(
+            135deg,
+            #102a56,
+            #174ea6,
+            #5b3cc4
+        );
 
-        .feedback.correct-feedback {
-            background: #e8f5e9;
-            border-left: 5px solid #188038;
-        }
+    box-shadow: 0 8px 30px rgba(23, 59, 122, 0.3);
 
-        .feedback.incorrect-feedback {
-            background: #ffebee;
-            border-left: 5px solid #d93025;
-        }
+    position: relative;
+    overflow: hidden;
 
-        .next-button {
-            display: none;
-            margin-top: 20px;
-            background: #173b7a;
-            color: white;
-            border: none;
-            padding: 14px 25px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-        }
+    animation: apparition 0.8s ease;
+}
 
-        .next-button:hover {
-            opacity: 0.85;
-        }
+header::before {
+    content: "";
+    position: absolute;
 
-        .final-screen {
-            display: none;
-            background: white;
-            padding: 35px;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
-        }
+    width: 300px;
+    height: 300px;
 
-        .final-screen h2 {
-            font-size: 30px;
-        }
+    border-radius: 50%;
 
-        .restart-button {
-            background: #173b7a;
-            color: white;
-            border: none;
-            padding: 14px 25px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-        }
+    border: 35px solid rgba(255,255,255,0.08);
 
-        footer {
-            text-align: center;
-            padding: 25px;
-            color: #555;
-        }
+    top: -180px;
+    left: -80px;
+}
 
-        @media (max-width: 600px) {
-            .container {
-                margin: 15px auto;
-                padding: 15px;
-            }
+header::after {
+    content: "";
+    position: absolute;
 
-            .scenario {
-                padding: 20px;
-            }
-        }
-    </style>
+    width: 250px;
+    height: 250px;
+
+    border-radius: 50%;
+
+    border: 30px solid rgba(255,255,255,0.08);
+
+    bottom: -180px;
+    right: -70px;
+}
+
+.logo {
+    font-size: 60px;
+    margin-bottom: 10px;
+
+    animation: flottement 3s ease-in-out infinite;
+}
+
+header h1 {
+    margin: 0 0 12px;
+
+    font-size: 34px;
+
+    position: relative;
+    z-index: 1;
+}
+
+header p {
+    margin: 0;
+
+    font-size: 17px;
+
+    opacity: 0.9;
+
+    position: relative;
+    z-index: 1;
+}
+
+
+/* ==============================
+   CONTENEUR
+============================== */
+
+.container {
+    width: 100%;
+    max-width: 720px;
+
+    margin: 45px auto;
+
+    padding: 20px;
+
+    animation: monter 0.9s ease;
+}
+
+
+/* ==============================
+   CARTE
+============================== */
+
+.card {
+    background: rgba(255,255,255,0.96);
+
+    border-radius: 24px;
+
+    padding: 35px;
+
+    box-shadow:
+        0 20px 50px rgba(31,41,55,0.15),
+        0 5px 15px rgba(31,41,55,0.08);
+
+    border: 1px solid rgba(255,255,255,0.8);
+
+    backdrop-filter: blur(10px);
+
+    transition: 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+
+    box-shadow:
+        0 25px 60px rgba(31,41,55,0.2);
+}
+
+
+/* ==============================
+   AVERTISSEMENT
+============================== */
+
+.warning {
+    display: flex;
+    gap: 12px;
+
+    background: linear-gradient(
+        135deg,
+        #fff8dc,
+        #fff1b8
+    );
+
+    border-left: 6px solid #f0ad00;
+
+    padding: 18px;
+
+    border-radius: 14px;
+
+    margin-bottom: 28px;
+
+    line-height: 1.5;
+
+    box-shadow: 0 5px 15px rgba(240,173,0,0.12);
+}
+
+.warning-icon {
+    font-size: 25px;
+}
+
+
+/* ==============================
+   TITRE DU CHAMP
+============================== */
+
+label {
+    display: block;
+
+    font-weight: bold;
+
+    font-size: 17px;
+
+    color: #173b7a;
+
+    margin-bottom: 10px;
+}
+
+
+/* ==============================
+   CHAMP MOT DE PASSE
+============================== */
+
+.input-area {
+    display: flex;
+    gap: 10px;
+}
+
+input {
+    flex: 1;
+
+    padding: 16px;
+
+    border: 2px solid #d6dce8;
+
+    border-radius: 12px;
+
+    font-size: 16px;
+
+    outline: none;
+
+    background: #fafbff;
+
+    transition: 0.3s ease;
+}
+
+input:hover {
+    border-color: #8fa8d6;
+}
+
+input:focus {
+    border-color: #315bb5;
+
+    background: white;
+
+    box-shadow:
+        0 0 0 4px rgba(49,91,181,0.12);
+}
+
+
+/* ==============================
+   BOUTON
+============================== */
+
+.show-button {
+    border: none;
+
+    padding: 0 20px;
+
+    border-radius: 12px;
+
+    color: white;
+
+    font-size: 15px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    background:
+        linear-gradient(
+            135deg,
+            #173b7a,
+            #315bb5
+        );
+
+    box-shadow:
+        0 6px 15px rgba(23,59,122,0.25);
+
+    transition: 0.25s ease;
+}
+
+.show-button:hover {
+    transform: translateY(-2px) scale(1.03);
+
+    background:
+        linear-gradient(
+            135deg,
+            #315bb5,
+            #6a4bc3
+        );
+
+    box-shadow:
+        0 9px 20px rgba(23,59,122,0.3);
+}
+
+.show-button:active {
+    transform: scale(0.98);
+}
+
+
+/* ==============================
+   ZONE DE FORCE
+============================== */
+
+.strength-box {
+    margin-top: 30px;
+
+    padding: 22px;
+
+    border-radius: 17px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f5f8ff,
+            #faf7ff
+        );
+
+    border: 1px solid #e2e7f2;
+}
+
+
+/* ==============================
+   BARRE
+============================== */
+
+.bar {
+    width: 100%;
+
+    height: 20px;
+
+    background: #e1e5ec;
+
+    border-radius: 20px;
+
+    overflow: hidden;
+
+    box-shadow:
+        inset 0 2px 5px rgba(0,0,0,0.12);
+}
+
+.bar-fill {
+    height: 100%;
+
+    width: 0%;
+
+    border-radius: 20px;
+
+    transition:
+        width 0.5s ease,
+        background 0.4s ease;
+
+    background: #d93025;
+}
+
+
+/* ==============================
+   TEXTE FORCE
+============================== */
+
+.strength-text {
+    text-align: center;
+
+    font-size: 24px;
+
+    font-weight: bold;
+
+    margin-top: 17px;
+}
+
+
+/* ==============================
+   CONDITIONS
+============================== */
+
+.requirements {
+    margin-top: 30px;
+
+    padding: 22px;
+
+    border-radius: 17px;
+
+    background: white;
+
+    border: 1px solid #e3e7ef;
+}
+
+.requirements h3 {
+    margin-top: 0;
+
+    color: #173b7a;
+
+    font-size: 20px;
+}
+
+.requirements p {
+    margin: 10px 0;
+
+    padding: 10px 13px;
+
+    border-radius: 10px;
+
+    background: #f7f8fb;
+
+    transition: 0.25s ease;
+}
+
+.requirements p:hover {
+    transform: translateX(5px);
+}
+
+.good {
+    color: #188038;
+
+    background: #e8f7ed !important;
+}
+
+.bad {
+    color: #d93025;
+
+    background: #fff0f0 !important;
+}
+
+
+/* ==============================
+   CONSEILS
+============================== */
+
+.tips {
+    margin-top: 30px;
+
+    padding: 23px;
+
+    border-radius: 17px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #edf4ff,
+            #f5efff
+        );
+
+    border: 1px solid #dfe5f3;
+}
+
+.tips h3 {
+    margin-top: 0;
+
+    color: #173b7a;
+}
+
+.tips ul {
+    padding-left: 25px;
+}
+
+.tips li {
+    margin: 12px 0;
+
+    line-height: 1.4;
+}
+
+
+/* ==============================
+   PIED DE PAGE
+============================== */
+
+footer {
+    text-align: center;
+
+    padding: 30px 15px;
+
+    color: #5b6472;
+
+    font-size: 14px;
+}
+
+
+/* ==============================
+   ANIMATIONS
+============================== */
+
+@keyframes apparition {
+    from {
+        opacity: 0;
+        transform: translateY(-25px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes monter {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes flottement {
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+
+/* ==============================
+   TÉLÉPHONE
+============================== */
+
+@media (max-width: 600px) {
+
+    header {
+        padding: 35px 15px;
+    }
+
+    header h1 {
+        font-size: 27px;
+    }
+
+    .logo {
+        font-size: 50px;
+    }
+
+    .container {
+        margin: 20px auto;
+        padding: 12px;
+    }
+
+    .card {
+        padding: 22px;
+    }
+
+    .input-area {
+        flex-direction: column;
+    }
+
+    .show-button {
+        padding: 13px;
+    }
+
+    .warning {
+        font-size: 14px;
+    }
+}
+
+</style>
 </head>
+
 
 <body>
 
+
 <header>
-    <h1>🛡️ What Would You Do?</h1>
-    <p>Test your phishing safety skills with real-life scenarios!</p>
+
+    <div class="logo">🔐</div>
+
+    <h1>
+        Vérificateur de la force du mot de passe
+    </h1>
+
+    <p>
+        Découvrez si votre mot de passe est faible, moyen ou fort.
+    </p>
+
 </header>
+
+
 
 <div class="container">
 
-    <div class="score">
-        Scenario <span id="scenarioNumber">1</span> / 12
-        &nbsp; | &nbsp;
-        Score: <span id="score">0</span>
-    </div>
+    <div class="card">
 
-    <div id="game">
 
-        <div class="scenario">
+        <div class="warning">
 
-            <div class="scenario-number" id="number"></div>
-
-            <h2 id="title"></h2>
-
-            <div class="situation">
-                <strong>What happens?</strong>
-                <p id="situation"></p>
+            <div class="warning-icon">
+                ⚠️
             </div>
 
-            <h3>What would you do?</h3>
+            <div>
 
-            <div class="choices" id="choices"></div>
+                <strong>Important :</strong><br>
 
-            <div class="feedback" id="feedback">
-                <h3 id="feedbackTitle"></h3>
-                <p id="feedbackText"></p>
+                N'entrez jamais votre véritable mot de passe
+                sur un site Web simplement pour le tester.
+
+                Utilisez un faux mot de passe ou un exemple
+                pour cet outil.
+
             </div>
 
-            <button class="next-button" id="nextButton" onclick="nextScenario()">
-                Next Scenario →
+        </div>
+
+
+
+        <label for="password">
+            🔑 Entrez un faux mot de passe :
+        </label>
+
+
+
+        <div class="input-area">
+
+            <input
+                type="password"
+                id="password"
+                placeholder="Écrivez un exemple de mot de passe..."
+                oninput="checkPassword()"
+            >
+
+            <button
+                class="show-button"
+                onclick="togglePassword()"
+            >
+                👁️ Afficher
             </button>
 
         </div>
 
-    </div>
 
-    <div class="final-screen" id="finalScreen">
 
-        <h2>🎉 Game Complete!</h2>
+        <div class="strength-box">
 
-        <p>
-            You scored
-            <strong><span id="finalScore">0</span>/12</strong>
-        </p>
+            <div class="bar">
 
-        <p id="finalMessage"></p>
+                <div
+                    class="bar-fill"
+                    id="bar"
+                ></div>
 
-        <button class="restart-button" onclick="restartGame()">
-            🔄 Play Again
-        </button>
+            </div>
+
+
+            <div
+                class="strength-text"
+                id="strength"
+            >
+                ✏️ Commencez à écrire...
+            </div>
+
+        </div>
+
+
+
+        <div class="requirements">
+
+            <h3>
+                🛡️ Qu'est-ce qui rend un mot de passe plus sécurisé ?
+            </h3>
+
+
+            <p id="length">
+                ❌ Au moins 12 caractères
+            </p>
+
+
+            <p id="uppercase">
+                ❌ Contient des lettres majuscules
+            </p>
+
+
+            <p id="lowercase">
+                ❌ Contient des lettres minuscules
+            </p>
+
+
+            <p id="number">
+                ❌ Contient des chiffres
+            </p>
+
+
+            <p id="special">
+                ❌ Contient des caractères spéciaux
+            </p>
+
+        </div>
+
+
+
+        <div class="tips">
+
+            <h3>
+                💡 Conseils pour créer un bon mot de passe
+            </h3>
+
+            <ul>
+
+                <li>
+                    🔐 Utilisez un mot de passe long ou une phrase secrète.
+                </li>
+
+                <li>
+                    🚫 Évitez d'utiliser votre nom ou votre date de naissance.
+                </li>
+
+                <li>
+                    🔄 N'utilisez pas le même mot de passe partout.
+                </li>
+
+                <li>
+                    📱 Utilisez un gestionnaire de mots de passe fiable.
+                </li>
+
+                <li>
+                    🛡️ Activez l'authentification à deux facteurs
+                    lorsqu'elle est disponible.
+                </li>
+
+            </ul>
+
+        </div>
+
 
     </div>
 
 </div>
 
+
+
 <footer>
-    <p>🛡️ Think before you click. Stay safe online!</p>
+
+    <p>
+        🔒 Cet outil ne sauvegarde ni n'envoie votre mot de passe.
+    </p>
+
+    <p>
+        🛡️ Votre sécurité en ligne commence par un mot de passe solide.
+    </p>
+
 </footer>
+
 
 
 <script>
 
-const scenarios = [
 
-    {
-        title: "The Urgent Bank Message",
-        situation: "You receive a message claiming to be from your bank. It says your account will be locked in 10 minutes unless you click a link and sign in.",
-        choices: [
-            "Click the link immediately.",
-            "Reply with your password.",
-            "Open your bank's official website or app yourself and check your account.",
-            "Forward the message to your friends."
-        ],
-        answer: 2,
-        explanation: "The safest choice is to access your bank through its official app or website yourself. Don't use links from unexpected messages."
-    },
+/* ==============================
+   VÉRIFIER LE MOT DE PASSE
+============================== */
 
-    {
-        title: "The Prize You Didn't Enter",
-        situation: "You receive an email saying you won a $5,000 prize from a contest you don't remember entering. It asks for your address and banking information.",
-        choices: [
-            "Send the information so you can get your prize.",
-            "Click the prize link.",
-            "Ignore the message and report it as suspicious.",
-            "Reply asking how you can receive the money."
-        ],
-        answer: 2,
-        explanation: "Unexpected prizes that request personal or financial information are a common phishing warning sign."
-    },
+function checkPassword() {
 
-    {
-        title: "Your School Account",
-        situation: "You receive a message saying your school account needs to be verified. The link goes to a website with a strange-looking address.",
-        choices: [
-            "Enter your school password.",
-            "Check with your teacher or school before doing anything.",
-            "Click the link because it has the school logo.",
-            "Send the link to another student."
-        ],
-        answer: 1,
-        explanation: "A school logo doesn't prove a message is real. Check with your school or use the official school website instead."
-    },
+    const password =
+        document.getElementById("password").value;
 
-    {
-        title: "A Friend Needs Help",
-        situation: "You receive a message from a friend's account saying they are stuck somewhere and urgently need money.",
-        choices: [
-            "Send money immediately.",
-            "Ask them for their banking information.",
-            "Contact your friend another way to make sure it is really them.",
-            "Forward the message to everyone."
-        ],
-        answer: 2,
-        explanation: "A hacked account can be used to impersonate someone you know. Verify the request using another way of contacting them."
-    },
+    const bar =
+        document.getElementById("bar");
 
-    {
-        title: "The Suspicious Package",
-        situation: "You get a text saying your package could not be delivered. It asks you to click a link and enter your address and credit card information.",
-        choices: [
-            "Click the link and enter the information.",
-            "Check the delivery company's official website or app yourself.",
-            "Send your credit card number by text.",
-            "Reply to the message with your address."
-        ],
-        answer: 1,
-        explanation: "Instead of using a link from an unexpected text, check the delivery company's official website or app."
-    },
+    const strength =
+        document.getElementById("strength");
 
-    {
-        title: "Free Game Currency",
-        situation: "A website promises free game currency if you enter your game username and password.",
-        choices: [
-            "Enter your password because it's free.",
-            "Use your friend's password instead.",
-            "Avoid the website and use the game's official store.",
-            "Share the website with your friends."
-        ],
-        answer: 2,
-        explanation: "Offers for free currency can be used to steal account information. Use official game services instead."
-    },
+    const length =
+        document.getElementById("length");
 
-    {
-        title: "The Fake Tech Support Alert",
-        situation: "A pop-up says your computer has a serious problem and tells you to call a phone number immediately.",
-        choices: [
-            "Call the number immediately.",
-            "Give the person remote access to your computer.",
-            "Close the pop-up and use trusted security software or ask a trusted adult for help.",
-            "Give them your password."
-        ],
-        answer: 2,
-        explanation: "Unexpected pop-ups claiming your computer is infected can be tech-support scams. Don't give strangers access to your device."
-    },
+    const uppercase =
+        document.getElementById("uppercase");
 
-    {
-        title: "The Social Media Warning",
-        situation: "You receive a message saying your social media account will be deleted unless you verify it using a link.",
-        choices: [
-            "Click the link immediately.",
-            "Enter your password and verification code.",
-            "Open the social media app yourself and check for notifications.",
-            "Send the message to your friends."
-        ],
-        answer: 2,
-        explanation: "Threats about account deletion are often used to create panic. Check your account through the official app or website."
-    },
+    const lowercase =
+        document.getElementById("lowercase");
 
-    {
-        title: "The Teacher's Request",
-        situation: "You receive an email that appears to be from a teacher asking you to buy gift cards and send the codes.",
-        choices: [
-            "Buy the gift cards.",
-            "Send the codes immediately.",
-            "Verify the request with your teacher using another method.",
-            "Ask another student to buy them."
-        ],
-        answer: 2,
-        explanation: "Requests for gift cards are a common scam. Verify unusual requests directly with the person."
-    },
+    const number =
+        document.getElementById("number");
 
-    {
-        title: "The Free Wi-Fi Login",
-        situation: "At a public place, you see a Wi-Fi network asking you to enter your email password before connecting.",
-        choices: [
-            "Enter your normal email password.",
-            "Use the same password you use everywhere.",
-            "Ask staff for the official Wi-Fi information.",
-            "Give the password to someone nearby."
-        ],
-        answer: 2,
-        explanation: "Don't enter your important passwords into suspicious Wi-Fi login pages. Ask staff for the correct network information."
-    },
+    const special =
+        document.getElementById("special");
 
-    {
-        title: "The Verification Code",
-        situation: "Someone messages you claiming to be support and asks you to send them a verification code that just arrived on your phone.",
-        choices: [
-            "Send them the code.",
-            "Send them your password too.",
-            "Don't share the code and contact the service through its official support page.",
-            "Post the code online."
-        ],
-        answer: 2,
-        explanation: "Verification codes are meant to protect your account. Never share them with someone who contacts you unexpectedly."
-    },
 
-    {
-        title: "The Suspicious Link From a Friend",
-        situation: "A friend sends you a message saying, 'OMG is this you?' with a strange link.",
-        choices: [
-            "Click it immediately.",
-            "Download whatever it asks you to download.",
-            "Ask your friend if they actually sent it and avoid the link for now.",
-            "Send it to another friend."
-        ],
-        answer: 2,
-        explanation: "Your friend's account could have been compromised. Verify with them before opening a suspicious link."
+    let points = 0;
+
+
+
+    /* Longueur */
+
+    if (password.length >= 12) {
+
+        points++;
+
+        length.textContent =
+            "✅ Au moins 12 caractères";
+
+        length.className = "good";
+
+    } else {
+
+        length.textContent =
+            "❌ Au moins 12 caractères";
+
+        length.className = "bad";
     }
 
-];
 
 
-let currentScenario = 0;
-let score = 0;
-let answered = false;
+    /* Majuscules */
+
+    if (/[A-Z]/.test(password)) {
+
+        points++;
+
+        uppercase.textContent =
+            "✅ Contient des lettres majuscules";
+
+        uppercase.className = "good";
+
+    } else {
+
+        uppercase.textContent =
+            "❌ Contient des lettres majuscules";
+
+        uppercase.className = "bad";
+    }
 
 
-function loadScenario() {
 
-    const scenario = scenarios[currentScenario];
+    /* Minuscules */
 
-    document.getElementById("scenarioNumber").textContent =
-        currentScenario + 1;
+    if (/[a-z]/.test(password)) {
 
-    document.getElementById("number").textContent =
-        "SCENARIO " + (currentScenario + 1);
+        points++;
 
-    document.getElementById("title").textContent =
-        scenario.title;
+        lowercase.textContent =
+            "✅ Contient des lettres minuscules";
 
-    document.getElementById("situation").textContent =
-        scenario.situation;
+        lowercase.className = "good";
 
-    document.getElementById("score").textContent =
-        score;
+    } else {
 
-    const choices = document.getElementById("choices");
+        lowercase.textContent =
+            "❌ Contient des lettres minuscules";
 
-    choices.innerHTML = "";
+        lowercase.className = "bad";
+    }
 
-    scenario.choices.forEach((choice, index) => {
 
-        const button = document.createElement("button");
 
-        button.className = "choice";
+    /* Chiffres */
+
+    if (/[0-9]/.test(password)) {
+
+        points++;
+
+        number.textContent =
+            "✅ Contient des chiffres";
+
+        number.className = "good";
+
+    } else {
+
+        number.textContent =
+            "❌ Contient des chiffres";
+
+        number.className = "bad";
+    }
+
+
+
+    /* Caractères spéciaux */
+
+    if (/[^A-Za-z0-9]/.test(password)) {
+
+        points++;
+
+        special.textContent =
+            "✅ Contient des caractères spéciaux";
+
+        special.className = "good";
+
+    } else {
+
+        special.textContent =
+            "❌ Contient des caractères spéciaux";
+
+        special.className = "bad";
+    }
+
+
+
+    /* ==============================
+       RÉSULTAT
+    ============================== */
+
+    if (password.length === 0) {
+
+        strength.textContent =
+            "✏️ Commencez à écrire...";
+
+        bar.style.width = "0%";
+
+        bar.style.background =
+            "#d93025";
+
+    }
+
+    else if (points <= 2) {
+
+        strength.textContent =
+            "🔴 Mot de passe faible";
+
+        bar.style.width =
+            "30%";
+
+        bar.style.background =
+            "#d93025";
+
+    }
+
+    else if (points === 3 || points === 4) {
+
+        strength.textContent =
+            "🟠 Mot de passe moyen";
+
+        bar.style.width =
+            "65%";
+
+        bar.style.background =
+            "#f0ad00";
+
+    }
+
+    else {
+
+        strength.textContent =
+            "🟢 Mot de passe fort";
+
+        bar.style.width =
+            "100%";
+
+        bar.style.background =
+            "#188038";
+
+    }
+
+}
+
+
+
+/* ==============================
+   AFFICHER / MASQUER
+============================== */
+
+function togglePassword() {
+
+    const password =
+        document.getElementById("password");
+
+    const button =
+        document.querySelector(".show-button");
+
+
+    if (password.type === "password") {
+
+        password.type = "text";
 
         button.textContent =
-            String.fromCharCode(65 + index) + ". " + choice;
-
-        button.onclick = function() {
-            checkAnswer(index, button);
-        };
-
-        choices.appendChild(button);
-
-    });
-
-    document.getElementById("feedback").style.display = "none";
-
-    document.getElementById("nextButton").style.display = "none";
-
-    answered = false;
-}
-
-
-function checkAnswer(selected, clickedButton) {
-
-    if (answered) {
-        return;
-    }
-
-    answered = true;
-
-    const scenario = scenarios[currentScenario];
-
-    const buttons =
-        document.querySelectorAll(".choice");
-
-    buttons.forEach(button => {
-        button.disabled = true;
-    });
-
-    const feedback =
-        document.getElementById("feedback");
-
-    const feedbackTitle =
-        document.getElementById("feedbackTitle");
-
-    const feedbackText =
-        document.getElementById("feedbackText");
-
-    if (selected === scenario.answer) {
-
-        score++;
-
-        clickedButton.classList.add("correct");
-
-        feedback.className =
-            "feedback correct-feedback";
-
-        feedbackTitle.textContent =
-            "✅ Correct!";
-
-        feedbackText.textContent =
-            scenario.explanation;
+            "🙈 Masquer";
 
     } else {
 
-        clickedButton.classList.add("incorrect");
+        password.type = "password";
 
-        buttons[scenario.answer].classList.add("correct");
-
-        feedback.className =
-            "feedback incorrect-feedback";
-
-        feedbackTitle.textContent =
-            "❌ Not quite!";
-
-        feedbackText.textContent =
-            scenario.explanation;
+        button.textContent =
+            "👁️ Afficher";
     }
 
-    document.getElementById("score").textContent =
-        score;
-
-    feedback.style.display = "block";
-
-    document.getElementById("nextButton").style.display =
-        "inline-block";
 }
-
-
-function nextScenario() {
-
-    currentScenario++;
-
-    if (currentScenario >= scenarios.length) {
-
-        showFinalScreen();
-
-    } else {
-
-        loadScenario();
-    }
-}
-
-
-function showFinalScreen() {
-
-    document.getElementById("game").style.display =
-        "none";
-
-    document.getElementById("finalScreen").style.display =
-        "block";
-
-    document.getElementById("finalScore").textContent =
-        score;
-
-    const finalMessage =
-        document.getElementById("finalMessage");
-
-    if (score === 12) {
-
-        finalMessage.textContent =
-            "🏆 Perfect! You have excellent phishing safety skills!";
-
-    } else if (score >= 9) {
-
-        finalMessage.textContent =
-            "👏 Great job! You know how to recognize many phishing tricks.";
-
-    } else if (score >= 6) {
-
-        finalMessage.textContent =
-            "👍 Good work! Keep learning about online safety.";
-
-    } else {
-
-        finalMessage.textContent =
-            "📚 Keep practicing! Learning these warning signs can help you stay safer online.";
-    }
-}
-
-
-function restartGame() {
-
-    currentScenario = 0;
-    score = 0;
-
-    document.getElementById("game").style.display =
-        "block";
-
-    document.getElementById("finalScreen").style.display =
-        "none";
-
-    loadScenario();
-}
-
-
-loadScenario();
 
 </script>
 
+
 </body>
 </html>
+```
+
