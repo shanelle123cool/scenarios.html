@@ -5,1013 +5,654 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>🔐 Vérificateur de mot de passe</title>
+<title>PhishGuard — Créé par Shanelle & Kaylee</title>
 
 <style>
-
-/* ==============================
-   STYLE PRINCIPAL
-============================== */
-
-* {
-    box-sizing: border-box;
-}
-
-body {
-    margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
-    color: #1f2937;
-
-    min-height: 100vh;
-
-    background:
-        radial-gradient(circle at 10% 20%, #93c5fd 0, transparent 25%),
-        radial-gradient(circle at 90% 80%, #c4b5fd 0, transparent 25%),
-        linear-gradient(135deg, #eef5ff, #f7f2ff);
-
-    overflow-x: hidden;
-}
-
-
-/* Petites décorations dans l'arrière-plan */
-
-body::before,
-body::after {
-    content: "";
-    position: fixed;
-    border-radius: 50%;
-    z-index: -1;
-    opacity: 0.35;
-}
-
-body::before {
-    width: 250px;
-    height: 250px;
-    background: #60a5fa;
-    top: 120px;
-    right: -100px;
-}
-
-body::after {
-    width: 200px;
-    height: 200px;
-    background: #a78bfa;
-    bottom: 50px;
-    left: -80px;
-}
-
-
-/* ==============================
-   EN-TÊTE
-============================== */
-
-header {
-    text-align: center;
-    color: white;
-
-    padding: 45px 20px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #102a56,
-            #174ea6,
-            #5b3cc4
-        );
-
-    box-shadow: 0 8px 30px rgba(23, 59, 122, 0.3);
-
-    position: relative;
-    overflow: hidden;
-
-    animation: apparition 0.8s ease;
-}
-
-header::before {
-    content: "";
-    position: absolute;
-
-    width: 300px;
-    height: 300px;
-
-    border-radius: 50%;
-
-    border: 35px solid rgba(255,255,255,0.08);
-
-    top: -180px;
-    left: -80px;
-}
-
-header::after {
-    content: "";
-    position: absolute;
-
-    width: 250px;
-    height: 250px;
-
-    border-radius: 50%;
-
-    border: 30px solid rgba(255,255,255,0.08);
-
-    bottom: -180px;
-    right: -70px;
-}
-
-.logo {
-    font-size: 60px;
-    margin-bottom: 10px;
-
-    animation: flottement 3s ease-in-out infinite;
-}
-
-header h1 {
-    margin: 0 0 12px;
-
-    font-size: 34px;
-
-    position: relative;
-    z-index: 1;
-}
-
-header p {
-    margin: 0;
-
-    font-size: 17px;
-
-    opacity: 0.9;
-
-    position: relative;
-    z-index: 1;
-}
-
-
-/* ==============================
-   CONTENEUR
-============================== */
-
-.container {
-    width: 100%;
-    max-width: 720px;
-
-    margin: 45px auto;
-
-    padding: 20px;
-
-    animation: monter 0.9s ease;
-}
-
-
-/* ==============================
-   CARTE
-============================== */
-
-.card {
-    background: rgba(255,255,255,0.96);
-
-    border-radius: 24px;
-
-    padding: 35px;
-
-    box-shadow:
-        0 20px 50px rgba(31,41,55,0.15),
-        0 5px 15px rgba(31,41,55,0.08);
-
-    border: 1px solid rgba(255,255,255,0.8);
-
-    backdrop-filter: blur(10px);
-
-    transition: 0.3s ease;
-}
-
-.card:hover {
-    transform: translateY(-4px);
-
-    box-shadow:
-        0 25px 60px rgba(31,41,55,0.2);
-}
-
-
-/* ==============================
-   AVERTISSEMENT
-============================== */
-
-.warning {
-    display: flex;
-    gap: 12px;
-
-    background: linear-gradient(
-        135deg,
-        #fff8dc,
-        #fff1b8
-    );
-
-    border-left: 6px solid #f0ad00;
-
-    padding: 18px;
-
-    border-radius: 14px;
-
-    margin-bottom: 28px;
-
-    line-height: 1.5;
-
-    box-shadow: 0 5px 15px rgba(240,173,0,0.12);
-}
-
-.warning-icon {
-    font-size: 25px;
-}
-
-
-/* ==============================
-   TITRE DU CHAMP
-============================== */
-
-label {
-    display: block;
-
-    font-weight: bold;
-
-    font-size: 17px;
-
-    color: #173b7a;
-
-    margin-bottom: 10px;
-}
-
-
-/* ==============================
-   CHAMP MOT DE PASSE
-============================== */
-
-.input-area {
-    display: flex;
-    gap: 10px;
-}
-
-input {
-    flex: 1;
-
-    padding: 16px;
-
-    border: 2px solid #d6dce8;
-
-    border-radius: 12px;
-
-    font-size: 16px;
-
-    outline: none;
-
-    background: #fafbff;
-
-    transition: 0.3s ease;
-}
-
-input:hover {
-    border-color: #8fa8d6;
-}
-
-input:focus {
-    border-color: #315bb5;
-
-    background: white;
-
-    box-shadow:
-        0 0 0 4px rgba(49,91,181,0.12);
-}
-
-
-/* ==============================
-   BOUTON
-============================== */
-
-.show-button {
-    border: none;
-
-    padding: 0 20px;
-
-    border-radius: 12px;
-
-    color: white;
-
-    font-size: 15px;
-
-    font-weight: bold;
-
-    cursor: pointer;
-
-    background:
-        linear-gradient(
-            135deg,
-            #173b7a,
-            #315bb5
-        );
-
-    box-shadow:
-        0 6px 15px rgba(23,59,122,0.25);
-
-    transition: 0.25s ease;
-}
-
-.show-button:hover {
-    transform: translateY(-2px) scale(1.03);
-
-    background:
-        linear-gradient(
-            135deg,
-            #315bb5,
-            #6a4bc3
-        );
-
-    box-shadow:
-        0 9px 20px rgba(23,59,122,0.3);
-}
-
-.show-button:active {
-    transform: scale(0.98);
-}
-
-
-/* ==============================
-   ZONE DE FORCE
-============================== */
-
-.strength-box {
-    margin-top: 30px;
-
-    padding: 22px;
-
-    border-radius: 17px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #f5f8ff,
-            #faf7ff
-        );
-
-    border: 1px solid #e2e7f2;
-}
-
-
-/* ==============================
-   BARRE
-============================== */
-
-.bar {
-    width: 100%;
-
-    height: 20px;
-
-    background: #e1e5ec;
-
-    border-radius: 20px;
-
-    overflow: hidden;
-
-    box-shadow:
-        inset 0 2px 5px rgba(0,0,0,0.12);
-}
-
-.bar-fill {
-    height: 100%;
-
-    width: 0%;
-
-    border-radius: 20px;
-
-    transition:
-        width 0.5s ease,
-        background 0.4s ease;
-
-    background: #d93025;
-}
-
-
-/* ==============================
-   TEXTE FORCE
-============================== */
-
-.strength-text {
-    text-align: center;
-
-    font-size: 24px;
-
-    font-weight: bold;
-
-    margin-top: 17px;
-}
-
-
-/* ==============================
-   CONDITIONS
-============================== */
-
-.requirements {
-    margin-top: 30px;
-
-    padding: 22px;
-
-    border-radius: 17px;
-
-    background: white;
-
-    border: 1px solid #e3e7ef;
-}
-
-.requirements h3 {
-    margin-top: 0;
-
-    color: #173b7a;
-
-    font-size: 20px;
-}
-
-.requirements p {
-    margin: 10px 0;
-
-    padding: 10px 13px;
-
-    border-radius: 10px;
-
-    background: #f7f8fb;
-
-    transition: 0.25s ease;
-}
-
-.requirements p:hover {
-    transform: translateX(5px);
-}
-
-.good {
-    color: #188038;
-
-    background: #e8f7ed !important;
-}
-
-.bad {
-    color: #d93025;
-
-    background: #fff0f0 !important;
-}
-
-
-/* ==============================
-   CONSEILS
-============================== */
-
-.tips {
-    margin-top: 30px;
-
-    padding: 23px;
-
-    border-radius: 17px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #edf4ff,
-            #f5efff
-        );
-
-    border: 1px solid #dfe5f3;
-}
-
-.tips h3 {
-    margin-top: 0;
-
-    color: #173b7a;
-}
-
-.tips ul {
-    padding-left: 25px;
-}
-
-.tips li {
-    margin: 12px 0;
-
-    line-height: 1.4;
-}
-
-
-/* ==============================
-   PIED DE PAGE
-============================== */
-
-footer {
-    text-align: center;
-
-    padding: 30px 15px;
-
-    color: #5b6472;
-
-    font-size: 14px;
-}
-
-
-/* ==============================
-   ANIMATIONS
-============================== */
-
-@keyframes apparition {
-    from {
-        opacity: 0;
-        transform: translateY(-25px);
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
     }
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes monter {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes flottement {
-    0%, 100% {
-        transform: translateY(0);
-    }
-
-    50% {
-        transform: translateY(-8px);
-    }
-}
-
-
-/* ==============================
-   TÉLÉPHONE
-============================== */
-
-@media (max-width: 600px) {
-
-    header {
-        padding: 35px 15px;
-    }
-
-    header h1 {
-        font-size: 27px;
-    }
-
-    .logo {
-        font-size: 50px;
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        min-height: 100vh;
+        color: white;
+        background:
+            radial-gradient(circle at 10% 20%, rgba(0, 217, 255, .15), transparent 30%),
+            radial-gradient(circle at 90% 80%, rgba(120, 70, 255, .18), transparent 30%),
+            linear-gradient(135deg, #07111f, #0b1830 50%, #050914);
+        padding: 30px 15px;
     }
 
     .container {
-        margin: 20px auto;
-        padding: 12px;
+        max-width: 1050px;
+        margin: auto;
     }
 
-    .card {
-        padding: 22px;
+    /* HEADER */
+    header {
+        text-align: center;
+        margin-bottom: 30px;
     }
 
-    .input-area {
-        flex-direction: column;
+    .logo {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 34px;
+        font-weight: 900;
+        letter-spacing: 1px;
+        margin-bottom: 10px;
     }
 
-    .show-button {
-        padding: 13px;
+    .logo-icon {
+        width: 58px;
+        height: 58px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 18px;
+        background: linear-gradient(135deg, #00d9ff, #536dfe);
+        box-shadow: 0 0 30px rgba(0, 217, 255, .35);
+    }
+
+    header p {
+        color: #aebed7;
+        font-size: 16px;
+    }
+
+    .authors {
+        display: inline-block;
+        margin-top: 12px;
+        padding: 8px 18px;
+        border-radius: 30px;
+        background: rgba(255,255,255,.08);
+        border: 1px solid rgba(255,255,255,.12);
+        color: #73e8ff;
+        font-weight: bold;
+    }
+
+    /* DASHBOARD */
+    .dashboard {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .stat {
+        background: rgba(255,255,255,.07);
+        border: 1px solid rgba(255,255,255,.12);
+        border-radius: 18px;
+        padding: 18px;
+        text-align: center;
+        backdrop-filter: blur(12px);
+    }
+
+    .stat-title {
+        color: #9fb0ca;
+        font-size: 13px;
+        margin-bottom: 7px;
+    }
+
+    .stat-value {
+        font-size: 24px;
+        font-weight: 900;
+    }
+
+    /* CARD */
+    .game-card {
+        background: rgba(10, 22, 43, .82);
+        border: 1px solid rgba(255,255,255,.13);
+        border-radius: 28px;
+        overflow: hidden;
+        box-shadow: 0 25px 80px rgba(0,0,0,.4);
+        backdrop-filter: blur(18px);
+    }
+
+    .scenario-header {
+        padding: 25px 30px;
+        background: linear-gradient(90deg, rgba(0,217,255,.12), rgba(83,109,254,.12));
+        border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+
+    .scenario-header h2 {
+        font-size: 23px;
+        margin-bottom: 7px;
+    }
+
+    .scenario-header p {
+        color: #aabbd4;
+    }
+
+    /* EMAIL */
+    .email {
+        margin: 30px;
+        background: white;
+        color: #172033;
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 15px 45px rgba(0,0,0,.3);
+    }
+
+    .email-top {
+        background: #e9eef5;
+        padding: 13px 18px;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+    }
+
+    .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #ff5f57;
+    }
+
+    .dot:nth-child(2) {
+        background: #ffbd2e;
+    }
+
+    .dot:nth-child(3) {
+        background: #28c840;
+    }
+
+    .email-content {
+        padding: 28px;
+    }
+
+    .email-brand {
+        font-size: 25px;
+        font-weight: 900;
+        margin-bottom: 20px;
+        color: #243b72;
+    }
+
+    .email-info {
+        background: #f4f7fb;
+        padding: 16px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+    }
+
+    .email-info div {
+        margin: 7px 0;
+    }
+
+    .email-info strong {
+        display: inline-block;
+        width: 70px;
+    }
+
+    .email-message {
+        line-height: 1.7;
+        font-size: 16px;
     }
 
     .warning {
+        margin-top: 20px;
+        padding: 15px;
+        border-left: 5px solid #ff4d67;
+        background: #fff1f3;
+        color: #8b1e2f;
+        border-radius: 8px;
+        font-weight: bold;
+    }
+
+    /* ANSWERS */
+    .answers {
+        padding: 0 30px 30px;
+    }
+
+    .answers h3 {
+        text-align: center;
+        margin-bottom: 18px;
+        color: #dce8f8;
+    }
+
+    .choices {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+
+    .choice {
+        border: 1px solid rgba(255,255,255,.13);
+        background: rgba(255,255,255,.06);
+        color: white;
+        padding: 20px;
+        border-radius: 16px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+        transition: .25s;
+    }
+
+    .choice:hover {
+        transform: translateY(-4px);
+        border-color: #00d9ff;
+        background: rgba(0,217,255,.12);
+        box-shadow: 0 10px 25px rgba(0,217,255,.12);
+    }
+
+    .choice span {
+        display: block;
+        font-size: 26px;
+        margin-bottom: 8px;
+    }
+
+    /* RESULT */
+    #result {
+        display: none;
+        margin: 0 30px 30px;
+        padding: 22px;
+        border-radius: 16px;
+        text-align: center;
+    }
+
+    .correct {
+        background: rgba(35, 211, 133, .13);
+        border: 1px solid #23d385;
+    }
+
+    .incorrect {
+        background: rgba(255, 77, 103, .13);
+        border: 1px solid #ff4d67;
+    }
+
+    #result h3 {
+        margin-bottom: 8px;
+        font-size: 22px;
+    }
+
+    /* NEXT */
+    #nextBtn {
+        display: none;
+        margin: 0 auto 30px;
+        border: none;
+        padding: 14px 30px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #00c6ff, #536dfe);
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        box-shadow: 0 10px 30px rgba(0,198,255,.2);
+    }
+
+    #nextBtn:hover {
+        transform: translateY(-2px);
+    }
+
+    footer {
+        text-align: center;
+        color: #71829c;
+        margin-top: 25px;
         font-size: 14px;
     }
-}
 
+    footer strong {
+        color: #73e8ff;
+    }
+
+    @media (max-width: 700px) {
+        .dashboard {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .choices {
+            grid-template-columns: 1fr;
+        }
+
+        .email,
+        .answers {
+            margin-left: 18px;
+            margin-right: 18px;
+        }
+
+        .scenario-header {
+            padding: 20px;
+        }
+
+        .logo {
+            font-size: 27px;
+        }
+    }
 </style>
 </head>
 
-
 <body>
-
-
-<header>
-
-    <div class="logo">🔐</div>
-
-    <h1>
-        Vérificateur de la force du mot de passe
-    </h1>
-
-    <p>
-        Découvrez si votre mot de passe est faible, moyen ou fort.
-    </p>
-
-</header>
-
-
 
 <div class="container">
 
-    <div class="card">
+<header>
+    <div class="logo">
+        <div class="logo-icon">🛡️</div>
+        PHISHGUARD
+    </div>
 
+    <p>Teste tes connaissances et apprends à reconnaître les tentatives d’hameçonnage.</p>
 
-        <div class="warning">
+    <div class="authors">
+        ✨ Créé par Shanelle & Kaylee ✨
+    </div>
+</header>
 
-            <div class="warning-icon">
-                ⚠️
+<section class="dashboard">
+
+    <div class="stat">
+        <div class="stat-title">🎯 SCÉNARIO</div>
+        <div class="stat-value" id="scenario">1 / 5</div>
+    </div>
+
+    <div class="stat">
+        <div class="stat-title">⭐ SCORE</div>
+        <div class="stat-value" id="score">0</div>
+    </div>
+
+    <div class="stat">
+        <div class="stat-title">❤️ VIES</div>
+        <div class="stat-value" id="lives">❤️❤️❤️</div>
+    </div>
+
+    <div class="stat">
+        <div class="stat-title">⏱️ TEMPS</div>
+        <div class="stat-value" id="timer">30</div>
+    </div>
+
+</section>
+
+<main class="game-card">
+
+    <div class="scenario-header">
+        <h2>📩 Analyse ce message</h2>
+        <p>Lis attentivement le scénario et choisis la meilleure réponse.</p>
+    </div>
+
+    <div class="email">
+
+        <div class="email-top">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+
+        <div class="email-content">
+
+            <div class="email-brand">
+                🔐 Service de sécurité
             </div>
 
-            <div>
+            <div class="email-info">
+                <div><strong>De :</strong> securite-compte@verification-support.com</div>
+                <div><strong>À :</strong> vous</div>
+                <div><strong>Objet :</strong> ⚠️ Action urgente requise sur votre compte</div>
+            </div>
 
-                <strong>Important :</strong><br>
+            <div class="email-message">
 
-                N'entrez jamais votre véritable mot de passe
-                sur un site Web simplement pour le tester.
+                Bonjour,
 
-                Utilisez un faux mot de passe ou un exemple
-                pour cet outil.
+                <br><br>
 
+                Nous avons détecté une activité inhabituelle sur votre compte.
+                Pour éviter la suspension de votre compte, vous devez confirmer
+                vos informations immédiatement.
+
+                <br><br>
+
+                Vous disposez de seulement <strong>30 minutes</strong> pour effectuer
+                la vérification.
+
+                <br><br>
+
+                Merci de cliquer sur le lien ci-dessous pour sécuriser votre compte.
+
+            </div>
+
+            <div class="warning">
+                ⚠️ Attention : ce message essaie de vous faire agir rapidement.
             </div>
 
         </div>
 
+    </div>
 
+    <div class="answers">
 
-        <label for="password">
-            🔑 Entrez un faux mot de passe :
-        </label>
+        <h3>🤔 Que ferais-tu ?</h3>
 
+        <div class="choices">
 
+            <button class="choice" onclick="answer(0)">
+                <span>🔗</span>
+                Je clique sur le lien pour vérifier mon compte.
+            </button>
 
-        <div class="input-area">
+            <button class="choice" onclick="answer(1)">
+                <span>📧</span>
+                Je réponds au courriel pour demander plus d’informations.
+            </button>
 
-            <input
-                type="password"
-                id="password"
-                placeholder="Écrivez un exemple de mot de passe..."
-                oninput="checkPassword()"
-            >
+            <button class="choice" onclick="answer(2)">
+                <span>🛑</span>
+                Je ne clique pas et je signale le message comme phishing.
+            </button>
 
-            <button
-                class="show-button"
-                onclick="togglePassword()"
-            >
-                👁️ Afficher
+            <button class="choice" onclick="answer(3)">
+                <span>📱</span>
+                Je transfère le message à mes amis pour leur demander leur avis.
             </button>
 
         </div>
 
-
-
-        <div class="strength-box">
-
-            <div class="bar">
-
-                <div
-                    class="bar-fill"
-                    id="bar"
-                ></div>
-
-            </div>
-
-
-            <div
-                class="strength-text"
-                id="strength"
-            >
-                ✏️ Commencez à écrire...
-            </div>
-
-        </div>
-
-
-
-        <div class="requirements">
-
-            <h3>
-                🛡️ Qu'est-ce qui rend un mot de passe plus sécurisé ?
-            </h3>
-
-
-            <p id="length">
-                ❌ Au moins 12 caractères
-            </p>
-
-
-            <p id="uppercase">
-                ❌ Contient des lettres majuscules
-            </p>
-
-
-            <p id="lowercase">
-                ❌ Contient des lettres minuscules
-            </p>
-
-
-            <p id="number">
-                ❌ Contient des chiffres
-            </p>
-
-
-            <p id="special">
-                ❌ Contient des caractères spéciaux
-            </p>
-
-        </div>
-
-
-
-        <div class="tips">
-
-            <h3>
-                💡 Conseils pour créer un bon mot de passe
-            </h3>
-
-            <ul>
-
-                <li>
-                    🔐 Utilisez un mot de passe long ou une phrase secrète.
-                </li>
-
-                <li>
-                    🚫 Évitez d'utiliser votre nom ou votre date de naissance.
-                </li>
-
-                <li>
-                    🔄 N'utilisez pas le même mot de passe partout.
-                </li>
-
-                <li>
-                    📱 Utilisez un gestionnaire de mots de passe fiable.
-                </li>
-
-                <li>
-                    🛡️ Activez l'authentification à deux facteurs
-                    lorsqu'elle est disponible.
-                </li>
-
-            </ul>
-
-        </div>
-
-
     </div>
+
+    <div id="result"></div>
+
+    <button id="nextBtn" onclick="nextScenario()">
+        Scénario suivant ➜
+    </button>
+
+</main>
+
+<footer>
+    🛡️ PhishGuard — Projet de sensibilisation à la cybersécurité
+    <br><br>
+    <strong>Créé avec soin par Shanelle & Kaylee</strong>
+</footer>
 
 </div>
 
-
-
-<footer>
-
-    <p>
-        🔒 Cet outil ne sauvegarde ni n'envoie votre mot de passe.
-    </p>
-
-    <p>
-        🛡️ Votre sécurité en ligne commence par un mot de passe solide.
-    </p>
-
-</footer>
-
-
-
 <script>
 
+let currentScenario = 1;
+let score = 0;
+let lives = 3;
+let time = 30;
+let timerInterval;
 
-/* ==============================
-   VÉRIFIER LE MOT DE PASSE
-============================== */
+const scenarios = [
 
-function checkPassword() {
+    {
+        correct: 2,
+        explanation:
+        "Bonne réponse ! Le message présente plusieurs signes suspects : urgence, menace de suspension et adresse courriel douteuse. Il est préférable de ne pas cliquer et de signaler le message."
+    },
 
-    const password =
-        document.getElementById("password").value;
+    {
+        correct: 0,
+        explanation:
+        "Attention ! Cliquer directement sur un lien suspect peut vous envoyer vers une fausse page destinée à voler vos informations."
+    },
 
-    const bar =
-        document.getElementById("bar");
+    {
+        correct: 1,
+        explanation:
+        "Attention ! Répondre à un message suspect peut confirmer que votre adresse est active et peut vous exposer davantage."
+    },
 
-    const strength =
-        document.getElementById("strength");
+    {
+        correct: 3,
+        explanation:
+        "Attention ! Il ne faut pas transférer un message suspect. Le mieux est de le signaler à l’organisation ou au service informatique."
+    },
 
-    const length =
-        document.getElementById("length");
+    {
+        correct: 2,
+        explanation:
+        "Excellent ! En cas de doute, ne cliquez pas, vérifiez l’expéditeur par un moyen officiel et signalez le message."
+    }
 
-    const uppercase =
-        document.getElementById("uppercase");
+];
 
-    const lowercase =
-        document.getElementById("lowercase");
+function startTimer() {
 
-    const number =
-        document.getElementById("number");
+    clearInterval(timerInterval);
 
-    const special =
-        document.getElementById("special");
+    time = 30;
+    document.getElementById("timer").textContent = time;
+
+    timerInterval = setInterval(() => {
+
+        time--;
+
+        document.getElementById("timer").textContent = time;
+
+        if (time <= 0) {
+
+            clearInterval(timerInterval);
+
+            showResult(
+                false,
+                "⏰ Temps écoulé ! Il vaut mieux prendre le temps de vérifier un message plutôt que de cliquer rapidement."
+            );
+        }
+
+    }, 1000);
+}
 
 
-    let points = 0;
+function answer(choice) {
 
+    clearInterval(timerInterval);
 
+    const scenario = scenarios[currentScenario - 1];
 
-    /* Longueur */
+    const result = document.getElementById("result");
 
-    if (password.length >= 12) {
+    if (choice === scenario.correct) {
 
-        points++;
+        score += 100;
 
-        length.textContent =
-            "✅ Au moins 12 caractères";
+        document.getElementById("score").textContent = score;
 
-        length.className = "good";
+        showResult(
+            true,
+            "🎉 Bonne réponse ! " + scenario.explanation
+        );
 
     } else {
 
-        length.textContent =
-            "❌ Au moins 12 caractères";
+        lives--;
 
-        length.className = "bad";
-    }
+        document.getElementById("lives").textContent =
+            "❤️".repeat(lives) + "🖤".repeat(3 - lives);
 
+        showResult(
+            false,
+            "❌ Pas tout à fait. " + scenario.explanation
+        );
 
+        if (lives <= 0) {
 
-    /* Majuscules */
+            setTimeout(() => {
 
-    if (/[A-Z]/.test(password)) {
+                alert(
+                    "💻 Partie terminée !\n\nScore final : " +
+                    score
+                );
 
-        points++;
+                location.reload();
 
-        uppercase.textContent =
-            "✅ Contient des lettres majuscules";
+            }, 1500);
 
-        uppercase.className = "good";
-
-    } else {
-
-        uppercase.textContent =
-            "❌ Contient des lettres majuscules";
-
-        uppercase.className = "bad";
-    }
-
-
-
-    /* Minuscules */
-
-    if (/[a-z]/.test(password)) {
-
-        points++;
-
-        lowercase.textContent =
-            "✅ Contient des lettres minuscules";
-
-        lowercase.className = "good";
-
-    } else {
-
-        lowercase.textContent =
-            "❌ Contient des lettres minuscules";
-
-        lowercase.className = "bad";
-    }
-
-
-
-    /* Chiffres */
-
-    if (/[0-9]/.test(password)) {
-
-        points++;
-
-        number.textContent =
-            "✅ Contient des chiffres";
-
-        number.className = "good";
-
-    } else {
-
-        number.textContent =
-            "❌ Contient des chiffres";
-
-        number.className = "bad";
-    }
-
-
-
-    /* Caractères spéciaux */
-
-    if (/[^A-Za-z0-9]/.test(password)) {
-
-        points++;
-
-        special.textContent =
-            "✅ Contient des caractères spéciaux";
-
-        special.className = "good";
-
-    } else {
-
-        special.textContent =
-            "❌ Contient des caractères spéciaux";
-
-        special.className = "bad";
-    }
-
-
-
-    /* ==============================
-       RÉSULTAT
-    ============================== */
-
-    if (password.length === 0) {
-
-        strength.textContent =
-            "✏️ Commencez à écrire...";
-
-        bar.style.width = "0%";
-
-        bar.style.background =
-            "#d93025";
-
-    }
-
-    else if (points <= 2) {
-
-        strength.textContent =
-            "🔴 Mot de passe faible";
-
-        bar.style.width =
-            "30%";
-
-        bar.style.background =
-            "#d93025";
-
-    }
-
-    else if (points === 3 || points === 4) {
-
-        strength.textContent =
-            "🟠 Mot de passe moyen";
-
-        bar.style.width =
-            "65%";
-
-        bar.style.background =
-            "#f0ad00";
-
-    }
-
-    else {
-
-        strength.textContent =
-            "🟢 Mot de passe fort";
-
-        bar.style.width =
-            "100%";
-
-        bar.style.background =
-            "#188038";
+        }
 
     }
 
 }
 
 
+function showResult(correct, message) {
 
-/* ==============================
-   AFFICHER / MASQUER
-============================== */
+    const result = document.getElementById("result");
 
-function togglePassword() {
+    result.style.display = "block";
 
-    const password =
-        document.getElementById("password");
+    result.className = correct ? "correct" : "incorrect";
 
-    const button =
-        document.querySelector(".show-button");
+    result.innerHTML = `
+        <h3>${correct ? "✅ Correct !" : "🚨 Attention !"}</h3>
+        <p>${message}</p>
+    `;
+
+    document.querySelectorAll(".choice").forEach(button => {
+        button.disabled = true;
+        button.style.opacity = ".55";
+        button.style.cursor = "not-allowed";
+    });
+
+    document.getElementById("nextBtn").style.display = "block";
+}
 
 
-    if (password.type === "password") {
+function nextScenario() {
 
-        password.type = "text";
+    currentScenario++;
 
-        button.textContent =
-            "🙈 Masquer";
+    if (currentScenario > scenarios.length) {
 
-    } else {
+        alert(
+            "🏆 Félicitations !\n\n" +
+            "Tu as terminé tous les scénarios.\n\n" +
+            "Score final : " + score
+        );
 
-        password.type = "password";
+        location.reload();
 
-        button.textContent =
-            "👁️ Afficher";
+        return;
     }
 
+    document.getElementById("scenario").textContent =
+        currentScenario + " / " + scenarios.length;
+
+    document.getElementById("result").style.display = "none";
+
+    document.getElementById("nextBtn").style.display = "none";
+
+    document.querySelectorAll(".choice").forEach(button => {
+
+        button.disabled = false;
+        button.style.opacity = "1";
+        button.style.cursor = "pointer";
+
+    });
+
+    startTimer();
+
 }
+
+
+/* Démarrage du jeu */
+startTimer();
 
 </script>
-
 
 </body>
 </html>
 ```
+
 
